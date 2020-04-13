@@ -1,0 +1,70 @@
+intel-numpy==1.14.3
+addict==2.2.1
+certifi==2019.6.16
+cffi==1.12.3
+chardet==3.0.4
+cvbase==0.5.5
+Cython==0.29.12
+idna==2.8
+mkl-fft==1.0.0.17
+mkl-random==1.0.1
+mmcv==0.2.10
+olefile==0.46
+opencv-python==4.1.0.25
+Pillow==6.2.0
+protobuf==3.8.0
+pycparser==2.19
+PyYAML==5.1.1
+requests==2.22.0
+scipy==1.2.1
+six==1.12.0
+tensorboardX==1.8
+terminaltables==3.1.0
+torch==1.3.0
+torchvision==0.2.1
+tqdm==4.32.1
+urllib3==1.25.3
+
+python tools/video_inpaint.py --frame_dir ./demo/frames --MASK_ROOT ./demo/masks --img_size 512 832 --LiteFlowNet --DFC --ResNet101 --Propagation 
+
+pip install torch==1.3.0+cpu torchvision==0.4.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
+#@title Clone or pull DeepFaceLab from Github
+
+Mode = "clone" #@param ["clone", "pull"]
+
+from pathlib import Path
+if (Mode == "clone"):
+  !git clone https://github.com/lukas-blecher/Deep-Flow-Guided-Video-Inpainting.git
+else:
+  %cd /content/Inpainting
+  !git pull
+
+!pip install numpy==1.16.4
+!pip install Cython==0.29.12
+!pip install -r /content/Deep-Flow-Guided-Video-Inpainting/requirements.txt
+!pip uninstall cupy
+!pip install cupy --no-cache-dir -vvvv
+!pip install --upgrade scikit-image
+
+
+print("Done!")
+
+#@title Sort aligned
+Data = "data_src" #@param ["data_src", "data_dst"]
+sort_type = "hist" #@param ["hist", "hist-dissim", "face-yaw", "face-pitch", "blur", "final"]
+
+cmd = "Deep-Flow-Guided-Video-Inpainting/tools/video_inpaint.py --frame_dir ./demo/frames --MASK_ROOT ./demo/masks --img_size 512 832 --LiteFlowNet --DFC --ResNet101 --Propagation" 
+
+%cd "/content"
+!python $cmd
+
+
+
+
+#@title Run
+
+cmd = "Deep-Flow-Guided-Video-Inpainting/tools/frame_inpaint.py --frame_dir Deep-Flow-Guided-Video-Inpainting/demo/frames --output_root Deep-Flow-Guided-Video-Inpainting/output --MASK_ROOT ./demo/masks --img_size 1920 1080 --LiteFlowNet --DFC --ResNet101 --Propagation" 
+
+%cd "/content"
+!python $cmd
